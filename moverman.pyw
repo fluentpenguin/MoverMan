@@ -1,16 +1,5 @@
 #!/usr/bin/env python3
-"""
-moverman 2.0 - copy, move and compare files between folders and drives (Windows 11)
 
-MOVE     Copy files from one or more sources to a target.
-         "Move, Don't Copy" (off by default) deletes each source file ONLY after the
-         copy has been verified byte-for-byte (SHA-256).
-COMPARE  Lists the files in source A that are missing from up to 4 targets (B-E).
-
-Run:   double-click moverman.pyw   (or:  python moverman.pyw)
-Needs: Python 3.8+ for Windows (tkinter is included in the standard installer).
-License: MIT
-"""
 import errno
 import hashlib
 import os
@@ -26,12 +15,12 @@ from tkinter import filedialog, messagebox, ttk
 
 __version__ = "2.0.0"
 
-CHUNK = 8 * 1024 * 1024                      # read/write block size
-PART = ".moverman_part"                      # suffix of in-progress files
+CHUNK = 8 * 1024 * 1024                      
+PART = ".moverman_part"                     
 STAGING = Path.home() / "Downloads" / "moverman_temp"
 SKIP_DIRS = {"system volume information", "$recycle.bin"}
-FATAL = {"E115", "E119"}                     # errors that stop the whole run
-DISPLAY_LIMIT = 2000                         # max missing files shown per target
+FATAL = {"E115", "E119"}                     
+DISPLAY_LIMIT = 2000                         
 
 ERRORS = {
     "E100": "No valid source selected",
@@ -57,7 +46,7 @@ ERRORS = {
 }
 
 
-# ----------------------------------------------------------------- helpers
+
 class Cancelled(Exception):
     pass
 
@@ -194,7 +183,7 @@ def enable_dpi():
             pass
 
 
-# ----------------------------------------------------------------- engine
+
 class Tracker:
     """Progress, speed (smoothed) and time-left for a job."""
 
@@ -334,7 +323,7 @@ def delete_source(path):
 def remove_empty_dirs(root):
     for d, _, _ in os.walk(lp(root), topdown=False):
         try:
-            os.rmdir(d)          # only succeeds on EMPTY folders
+            os.rmdir(d)          
         except OSError:
             pass
 
@@ -346,7 +335,7 @@ def summarize_errors(errors):
     return ",  ".join(f"{c} x{n}" for c, n in sorted(counts.items()))
 
 
-# ----------------------------------------------------------------- widgets
+
 def setup_style(root):
     st = ttk.Style(root)
     for theme in ("vista", "clam"):
@@ -542,7 +531,7 @@ class RunPanel(ttk.Frame):
         return self.text.get("1.0", "end")
 
 
-# ----------------------------------------------------------------- windows
+
 class ModeWindow(tk.Toplevel):
     TITLE = ""
     GEOMETRY = "780x700"
@@ -766,7 +755,7 @@ class MoveWindow(ModeWindow):
                 if key in seen:
                     skipped += 1
                     continue
-                seen.add(key)            # also blocks duplicates inside the sources
+                seen.add(key)            
             todo.append((p, rel, size))
         total = sum(t[2] for t in todo)
         verb = "move" if move else "copy"
@@ -810,8 +799,8 @@ class MoveWindow(ModeWindow):
             try:
                 if via:
                     tmp = lp(STAGING / f"{i}_{os.path.basename(rel)}")
-                    copy_file(src, tmp, cancel, progress, hasher)      # source -> Downloads
-                    copy_file(tmp, dst, cancel, progress)              # Downloads -> target
+                    copy_file(src, tmp, cancel, progress, hasher)     
+                    copy_file(tmp, dst, cancel, progress)              
                 else:
                     copy_file(src, dst, cancel, progress, hasher)
                 copied += 1
@@ -838,7 +827,7 @@ class MoveWindow(ModeWindow):
                     stopped = True
                     break
             finally:
-                if tmp and os.path.exists(tmp):          # our own temp file, never the source
+                if tmp and os.path.exists(tmp):          
                     try:
                         os.remove(tmp)
                     except OSError:
