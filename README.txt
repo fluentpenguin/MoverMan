@@ -6,6 +6,8 @@ A SpookyCat Project :)
        \(__)|
 
 
+Two Modes, "Move" and "Compare"
+
 
 "Move" will allow you to move any folder/drive/contents to a targeted destination.
 	Main Uses:
